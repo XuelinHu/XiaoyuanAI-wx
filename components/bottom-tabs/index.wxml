@@ -1,0 +1,15 @@
+<view class="bottom-tabs">
+  <view class="tabs-shell">
+    <view
+      wx:for="{{tabs}}"
+      wx:key="key"
+      class="tab-item {{current === item.key ? 'tab-item--active' : ''}}"
+      data-key="{{item.key}}"
+      data-url="{{item.url}}"
+      bindtap="handleTap"
+    >
+      <text class="tab-icon">{{item.icon}}</text>
+      <text class="tab-text">{{item.label}}</text>
+    </view>
+  </view>
+</view>

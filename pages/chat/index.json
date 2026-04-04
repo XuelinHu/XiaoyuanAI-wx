@@ -1,0 +1,5 @@
+{
+  "usingComponents": {
+    "bottom-tabs": "/components/bottom-tabs/index"
+  }
+}

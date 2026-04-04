@@ -1,0 +1,81 @@
+.history-page {
+  padding: 24rpx 24rpx 180rpx;
+}
+
+.hero {
+  padding: 28rpx;
+  background: linear-gradient(135deg, rgba(255, 239, 220, 0.98) 0%, rgba(232, 243, 255, 0.98) 100%);
+}
+
+.hero-title {
+  display: block;
+  font-size: 34rpx;
+  font-weight: 700;
+}
+
+.hero-subtitle {
+  display: block;
+  margin-top: 10rpx;
+  color: var(--text-secondary);
+  font-size: 24rpx;
+}
+
+.session-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  margin-top: 24rpx;
+}
+
+.session-card {
+  display: flex;
+  justify-content: space-between;
+  gap: 20rpx;
+  padding: 28rpx;
+}
+
+.session-main {
+  flex: 1;
+}
+
+.session-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+.session-desc {
+  display: block;
+  margin-top: 10rpx;
+  color: var(--text-secondary);
+  font-size: 24rpx;
+  line-height: 1.5;
+}
+
+.session-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 14rpx;
+}
+
+.session-time {
+  color: var(--text-light);
+  font-size: 22rpx;
+}
+
+.session-tag {
+  padding: 10rpx 18rpx;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+}
+
+.session-tag--warm {
+  background: var(--bg-soft-orange);
+  color: var(--brand-orange-deep);
+}
+
+.session-tag--calm {
+  background: var(--bg-soft-blue);
+  color: var(--brand-blue);
+}

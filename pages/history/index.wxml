@@ -1,0 +1,21 @@
+<view class="page-shell history-page">
+  <view class="hero card">
+    <text class="hero-title">历史会话</text>
+    <text class="hero-subtitle">先用 mock 列表模拟最近会话，后续可接分页和搜索。</text>
+  </view>
+
+  <view class="session-list">
+    <view wx:for="{{sessions}}" wx:key="id" class="session-card card">
+      <view class="session-main">
+        <text class="session-title">{{item.title}}</text>
+        <text class="session-desc">{{item.preview}}</text>
+      </view>
+      <view class="session-meta">
+        <text class="session-time">{{item.time}}</text>
+        <view class="session-tag {{item.moodClass}}">{{item.mood}}</view>
+      </view>
+    </view>
+  </view>
+
+  <bottom-tabs current="history" />
+</view>

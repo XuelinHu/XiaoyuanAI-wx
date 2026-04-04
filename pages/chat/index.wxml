@@ -1,0 +1,91 @@
+<view class="page-shell chat-page">
+  <view class="chat-header">
+    <view class="brand-block">
+      <view class="brand-avatar" bindtap="showAssistantIntro">
+        <text class="brand-avatar__text">元</text>
+      </view>
+      <view class="brand-copy">
+        <text class="brand-name">小元</text>
+        <text class="brand-subtitle">癌症情绪支持陪伴助手</text>
+      </view>
+    </view>
+    <view class="status-pill">
+      <text>{{assistantStatus}}</text>
+    </view>
+  </view>
+
+  <view class="chat-board card">
+    <view class="board-toolbar">
+      <view class="toolbar-copy">
+        <text class="toolbar-title">安心会话</text>
+        <text class="toolbar-subtitle">支持文本与表情，后续可扩展语音和图片</text>
+      </view>
+      <view class="toolbar-chip" bindtap="loadOlderMessages">加载历史</view>
+    </view>
+
+    <scroll-view
+      class="message-scroll"
+      style="height: calc(100vh - 454rpx - {{scrollExtraHeight}}px);"
+      scroll-y
+      enhanced
+      show-scrollbar="{{false}}"
+      scroll-into-view="{{scrollIntoView}}"
+    >
+      <view class="message-list">
+        <view wx:if="{{hasMoreHistory}}" class="history-anchor" bindtap="loadOlderMessages">
+          <text>查看更早消息</text>
+        </view>
+
+        <view
+          wx:for="{{messages}}"
+          wx:key="id"
+          id="msg-{{item.id}}"
+          class="message-row message-row--{{item.role}}"
+        >
+          <view
+            class="bubble bubble--{{item.role}} {{item.loading ? 'bubble--loading' : ''}}"
+            data-content="{{item.content}}"
+            bindlongpress="copyMessage"
+          >
+            <view wx:if="{{item.loading}}" class="typing-dots">
+              <text class="typing-dot"></text>
+              <text class="typing-dot"></text>
+              <text class="typing-dot"></text>
+            </view>
+            <text wx:else selectable="true" class="bubble-text">{{item.content}}</text>
+          </view>
+          <text class="message-time">{{item.time}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <view class="composer-shell" style="bottom: calc({{keyboardHeight}}px + env(safe-area-inset-bottom));">
+    <view class="composer card">
+      <view class="input-wrap">
+        <textarea
+          class="composer-input"
+          value="{{draft}}"
+          maxlength="300"
+          cursor-spacing="24"
+          auto-height
+          show-confirm-bar="{{false}}"
+          placeholder="把现在的感受告诉小元..."
+          placeholder-class="composer-placeholder"
+          bindinput="handleInput"
+          bindfocus="handleFocus"
+          bindblur="handleBlur"
+          bindconfirm="sendMessage"
+        />
+      </view>
+      <view class="composer-actions">
+        <view class="record-hint">长按可扩展录音</view>
+        <button class="send-button" bindtap="sendMessage" disabled="{{sending}}">
+          {{sending ? '发送中' : '发送'}}
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <bottom-tabs current="chat" />
+</view>
