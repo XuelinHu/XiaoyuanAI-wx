@@ -1,10 +1,10 @@
 <p align="center">
-  <img height="20" src="https://img.shields.io/badge/WeChat_Mini_Program-Mock_UI-07C160" />
-  <img height="20" src="https://img.shields.io/badge/JavaScript-ES6-F7DF1E" />
-  <img height="20" src="https://img.shields.io/badge/WXML-View_UI-1A73E8" />
-  <img height="20" src="https://img.shields.io/badge/WXSS-Warm_%2B_Blue-FF8A3D" />
-  <img height="20" src="https://img.shields.io/badge/Chat-Mock_Response-5A9BFF" />
-  <img height="20" src="https://img.shields.io/badge/Tabs-%E4%BC%9A%E8%AF%9D%20%7C%20%E5%8E%86%E5%8F%B2%20%7C%20%E6%88%91%E7%9A%84-F26A21" />
+  <img height="20" src="https://img.shields.io/badge/wechat_mini_program-mock_ui-07C160" />
+  <img height="20" src="https://img.shields.io/badge/javascript-es6-F7DF1E" />
+  <img height="20" src="https://img.shields.io/badge/wxml-chat_view-1A73E8" />
+  <img height="20" src="https://img.shields.io/badge/wxss-warm_blue-FF8A3D" />
+  <img height="20" src="https://img.shields.io/badge/chat-mock_reply-5A9BFF" />
+  <img height="20" src="https://img.shields.io/badge/tabs-history%20%7C%20chat%20%7C%20profile-F26A21" />
 </p>
 
 # XiaoyuanAI-wx
