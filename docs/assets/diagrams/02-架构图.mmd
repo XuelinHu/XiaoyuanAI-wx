@@ -1,0 +1,17 @@
+flowchart TB
+    Client["微信小程序 / HTML5 页面"]
+    Page["页面层"]
+    Service["业务服务层"]
+    Request["统一请求层"]
+    Config["配置层"]
+    Fallback["本地回退数据"]
+    Gateway["接口网关"]
+    Backend["后端业务服务"]
+
+    Client --> Page
+    Page --> Service
+    Service --> Request
+    Request --> Config
+    Request --> Gateway
+    Service --> Fallback
+    Gateway --> Backend

@@ -1,0 +1,41 @@
+classDiagram
+    class ConversationContext {
+      +conversationId
+      +assistantStatus
+      +hasMoreHistory
+      +nextMessageId
+    }
+
+    class Message {
+      +id
+      +role
+      +content
+      +time
+      +loading
+    }
+
+    class SessionSummary {
+      +id
+      +title
+      +preview
+      +time
+      +mood
+      +moodClass
+    }
+
+    class ProfileCard {
+      +title
+      +desc
+      +action
+    }
+
+    class AssistantProfile {
+      +name
+      +roleTitle
+      +statusText
+      +intro
+    }
+
+    ConversationContext --> Message
+    ConversationContext --> AssistantProfile
+    SessionSummary --> Message

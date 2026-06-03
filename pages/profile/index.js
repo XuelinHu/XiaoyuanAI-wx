@@ -1,21 +1,25 @@
+const { fetchProfileCards } = require('../../services/profile');
+
 Page({
   data: {
-    items: [
-      {
-        title: '会话偏好',
-        desc: '设置小元回复风格、语速与是否优先共情。',
-        action: '管理',
-      },
-      {
-        title: '紧急支持',
-        desc: '放置热线、医院联系人与一键求助入口的占位模块。',
-        action: '查看',
-      },
-      {
-        title: '消息与提醒',
-        desc: '后续可扩展复诊提醒、情绪打卡和睡眠记录提醒。',
-        action: '配置',
-      },
-    ],
+    items: [],
+  },
+
+  onLoad() {
+    this.loadProfileCards();
+  },
+
+  async loadProfileCards() {
+    try {
+      const response = await fetchProfileCards();
+      this.setData({
+        items: response.items || [],
+      });
+    } catch (error) {
+      wx.showToast({
+        title: '个人资料加载失败',
+        icon: 'none',
+      });
+    }
   },
 });

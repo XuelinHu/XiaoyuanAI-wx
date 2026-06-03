@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>小元 HTML5 我的页</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body data-view="profile">
+    <div id="app" class="app-shell">
+      <header class="chat-header">
+        <div class="brand-block">
+          <button id="assistantAvatar" class="brand-avatar" type="button" aria-label="查看小元介绍">元</button>
+          <div class="brand-copy">
+            <h1 class="brand-name">小元</h1>
+            <p class="brand-subtitle">癌症情绪支持陪伴助手</p>
+          </div>
+        </div>
+        <div id="assistantStatus" class="status-pill">在线陪伴中</div>
+      </header>
+
+      <main class="page-shell">
+        <section id="chatView" class="view-panel" data-view="chat">
+          <section class="card chat-board">
+            <div class="board-toolbar">
+              <div class="toolbar-copy">
+                <h2 class="toolbar-title">安心会话</h2>
+                <p class="toolbar-subtitle">支持文本交流，后续可扩展语音和图片能力</p>
+              </div>
+              <button id="loadHistoryButton" class="toolbar-chip" type="button">加载历史</button>
+            </div>
+
+            <div id="messageScroll" class="message-scroll">
+              <div class="message-list">
+                <button id="historyAnchor" class="history-anchor" type="button" hidden>查看更早消息</button>
+                <div id="messageList"></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="composer-shell">
+            <div class="composer card">
+              <div class="input-wrap">
+                <textarea
+                  id="composerInput"
+                  class="composer-input"
+                  maxlength="300"
+                  placeholder="把现在的感受告诉小元..."
+                ></textarea>
+              </div>
+              <div class="composer-actions">
+                <div class="record-hint">长按录音能力可继续扩展</div>
+                <button id="sendButton" class="send-button" type="button">发送</button>
+              </div>
+            </div>
+          </section>
+        </section>
+
+        <section id="historyView" class="view-panel" data-view="history">
+          <section class="hero card">
+            <h2 class="hero-title">历史会话</h2>
+            <p class="hero-subtitle">查看近期情绪支持记录和沟通摘要。</p>
+          </section>
+          <section id="sessionList" class="session-list"></section>
+        </section>
+
+        <section id="profileView" class="view-panel view-panel--active" data-view="profile">
+          <section class="profile-hero card">
+            <div class="profile-avatar">元</div>
+            <div class="profile-copy">
+              <h2 class="profile-name">我的</h2>
+              <p class="profile-subtitle">管理偏好、陪伴方式与会话设置</p>
+            </div>
+          </section>
+          <section id="profileList" class="profile-section"></section>
+        </section>
+      </main>
+
+      <nav class="bottom-tabs">
+        <div class="tabs-shell">
+          <button class="tab-item" data-view="history" type="button">
+            <span class="tab-icon">H</span>
+            <span class="tab-text">历史</span>
+          </button>
+          <button class="tab-item" data-view="chat" type="button">
+            <span class="tab-icon">AI</span>
+            <span class="tab-text">会话</span>
+          </button>
+          <button class="tab-item tab-item--active" data-view="profile" type="button">
+            <span class="tab-icon">ME</span>
+            <span class="tab-text">我的</span>
+          </button>
+        </div>
+      </nav>
+    </div>
+
+    <dialog id="assistantDialog" class="assistant-dialog">
+      <div class="assistant-dialog__body">
+        <h3>关于小元</h3>
+        <p id="assistantIntroText"></p>
+        <button id="closeDialogButton" class="dialog-button" type="button">知道了</button>
+      </div>
+    </dialog>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

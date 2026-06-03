@@ -1,0 +1,16 @@
+flowchart LR
+    Dev["开发机"]
+    Mini["微信开发者工具"]
+    Browser["浏览器"]
+    Runtime["微信客户端 / 浏览器运行环境"]
+    Gateway["HTTPS 网关：https://***.xiaoyuan-***.com/v1"]
+    Backend["应用服务"]
+    Storage["数据存储"]
+
+    Dev --> Mini
+    Dev --> Browser
+    Mini --> Runtime
+    Browser --> Runtime
+    Runtime --> Gateway
+    Gateway --> Backend
+    Backend --> Storage

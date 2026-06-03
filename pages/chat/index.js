@@ -1,49 +1,29 @@
-const olderMessages = [
-  {
-    id: 1,
-    role: 'assistant',
-    content: '你好，我是小元。这里可以先放心把情绪说出来，我会先陪你理清当下的感受。',
-    time: '20:30',
-  },
-  {
-    id: 2,
-    role: 'user',
-    content: '这几天总觉得胸口发闷，也有点怕把情绪影响到家里人。',
-    time: '20:31',
-  },
-  {
-    id: 3,
-    role: 'assistant',
-    content: '能感觉到你一直在撑着自己，也在顾及家人。先不用急着把自己表现得很坚强，我们可以一步一步来。',
-    time: '20:31',
-  },
-];
-
-const starterMessages = [
-  {
-    id: 4,
-    role: 'assistant',
-    content: '如果你愿意，可以从“现在最难受的一个感觉”开始说。',
-    time: '20:32',
-  },
-];
+const {
+  fetchConversationBootstrap,
+  fetchAssistantProfile,
+  fetchConversationHistory,
+  sendConversationMessage,
+} = require('../../services/chat');
 
 Page({
   data: {
     assistantStatus: '在线陪伴中',
-    messages: starterMessages,
+    assistantIntro: '',
+    conversationId: '',
+    messages: [],
     draft: '',
     scrollIntoView: '',
     sending: false,
+    bootstrapping: false,
     keyboardHeight: 108,
     scrollExtraHeight: 0,
-    hasMoreHistory: true,
-    nextMessageId: 5,
+    hasMoreHistory: false,
+    nextMessageId: 1,
   },
 
   onLoad() {
     this.setupKeyboardListener();
-    this.scrollToBottom();
+    this.initializeConversation();
   },
 
   onUnload() {
@@ -83,16 +63,44 @@ Page({
     });
   },
 
+  async initializeConversation() {
+    this.setData({ bootstrapping: true });
+    try {
+      const [bootstrap, profile] = await Promise.all([
+        fetchConversationBootstrap(),
+        fetchAssistantProfile(),
+      ]);
+      this.setData({
+        assistantStatus: profile.statusText || bootstrap.assistantStatus || '在线陪伴中',
+        assistantIntro: profile.intro || '',
+        conversationId: bootstrap.conversationId || '',
+        messages: bootstrap.messages || [],
+        hasMoreHistory: !!bootstrap.hasMoreHistory,
+        nextMessageId: bootstrap.nextMessageId || this.getNextMessageId(bootstrap.messages || []),
+      });
+      this.scrollToBottom();
+    } catch (error) {
+      wx.showToast({
+        title: '会话初始化失败',
+        icon: 'none',
+      });
+    } finally {
+      this.setData({ bootstrapping: false });
+    }
+  },
+
   showAssistantIntro() {
     wx.showModal({
       title: '关于小元',
-      content: '小元是一个癌症情绪支持聊天助手，当前页面使用 mock 数据演示对话、历史加载和输入交互，适合后续接入真实接口。',
+      content:
+        this.data.assistantIntro ||
+        '小元提供情绪支持会话服务，支持会话初始化、消息发送、历史查询和个性化设置同步。',
       showCancel: false,
       confirmText: '知道了',
     });
   },
 
-  loadOlderMessages() {
+  async loadOlderMessages() {
     if (!this.data.hasMoreHistory) {
       wx.showToast({
         title: '没有更多历史了',
@@ -101,11 +109,22 @@ Page({
       return;
     }
 
-    const mergedMessages = olderMessages.concat(this.data.messages);
-    this.setData({
-      messages: mergedMessages,
-      hasMoreHistory: false,
-    });
+    try {
+      const response = await fetchConversationHistory({
+        conversationId: this.data.conversationId,
+        anchorMessageId: this.data.messages.length ? this.data.messages[0].id : '',
+      });
+      const mergedMessages = (response.messages || []).concat(this.data.messages);
+      this.setData({
+        messages: mergedMessages,
+        hasMoreHistory: !!response.hasMoreHistory,
+      });
+    } catch (error) {
+      wx.showToast({
+        title: '历史消息加载失败',
+        icon: 'none',
+      });
+    }
   },
 
   copyMessage(event) {
@@ -118,7 +137,7 @@ Page({
     });
   },
 
-  sendMessage() {
+  async sendMessage() {
     const content = this.data.draft.trim();
     if (!content || this.data.sending) {
       return;
@@ -139,15 +158,20 @@ Page({
 
     this.scrollToBottom();
 
-    this.replyTimer = setTimeout(() => {
-      const reply = this.getMockReply(content);
+    try {
+      const response = await sendConversationMessage({
+        conversationId: this.data.conversationId,
+        content,
+        sceneCode: 'emotion_support_chat',
+      });
+      const replyMessage = response.replyMessage || this.createMessage(loadingMessage.id, 'assistant', '小元已收到你的消息。');
       const finalizedMessages = this.data.messages.map((item) => {
         if (item.id === loadingMessage.id) {
           return {
-            id: item.id,
+            id: replyMessage.id || item.id,
             role: 'assistant',
-            content: reply,
-            time: this.getTimeLabel(),
+            content: replyMessage.content,
+            time: replyMessage.time || this.getTimeLabel(),
             loading: false,
           };
         }
@@ -157,11 +181,30 @@ Page({
       this.setData({
         messages: finalizedMessages,
         sending: false,
-        assistantStatus: '在线陪伴中',
+        assistantStatus: response.assistantStatus || '在线陪伴中',
+        conversationId: response.conversationId || this.data.conversationId,
       });
 
       this.scrollToBottom();
-    }, 1200);
+    } catch (error) {
+      const finalizedMessages = this.data.messages.map((item) => {
+        if (item.id === loadingMessage.id) {
+          return {
+            id: item.id,
+            role: 'assistant',
+            content: '消息发送失败，请稍后重试。',
+            time: this.getTimeLabel(),
+            loading: false,
+          };
+        }
+        return item;
+      });
+      this.setData({
+        messages: finalizedMessages,
+        sending: false,
+        assistantStatus: '在线陪伴中',
+      });
+    }
   },
 
   createMessage(id, role, content, loading = false) {
@@ -172,22 +215,6 @@ Page({
       time: this.getTimeLabel(),
       loading,
     };
-  },
-
-  getMockReply(content) {
-    if (content.includes('害怕') || content.includes('担心')) {
-      return '害怕是很真实的反应，不代表你不够勇敢。现在先别要求自己马上平静下来，我们可以先一起把最担心的那件事说清楚。';
-    }
-
-    if (content.includes('睡') || content.includes('失眠')) {
-      return '睡不着的时候，情绪常常会被放大。今晚可以只给自己一个很小的目标，比如先慢慢呼吸三次，再把脑子里最吵的那个念头写出来。';
-    }
-
-    if (content.includes('家人') || content.includes('爸爸') || content.includes('妈妈')) {
-      return '你在意家人的感受，也说明你一直在努力保护这段关系。很多时候，把“我现在有点难受，但不需要你立刻解决”先说出来，反而会让沟通轻一点。';
-    }
-
-    return '我看到你已经把感受说出来了，这一步很重要。你不用急着整理得很完整，我们可以继续只聊当下最压着你的那个点。';
   },
 
   getTimeLabel() {
@@ -208,6 +235,16 @@ Page({
         scrollIntoView: `msg-${lastMessage.id}`,
       });
     }, 60);
+  },
+
+  getNextMessageId(messages) {
+    if (!messages.length) {
+      return 1;
+    }
+    return Math.max.apply(
+      null,
+      messages.map((item) => item.id)
+    ) + 1;
   },
 
   clearReplyTimer() {
